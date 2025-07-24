@@ -1,6 +1,7 @@
 import requests
 from flask import current_app
 from google import genai
+from urllib import parse
 
 
 QLOO_API_URL = "https://hackathon.api.qloo.com/v2"
@@ -16,7 +17,7 @@ def generate_summary():
     return response.text
 
 def generate_recommendation():
-    url = f"{QLOO_API_URL}/insights?filter.type=ur"
+    url = f"{QLOO_API_URL}/insights?filter.type=urn:entity:destination"
 
     headers = {
         "accept": "application/json",

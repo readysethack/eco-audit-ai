@@ -1,0 +1,20 @@
+[project]
+name = "travel-guide-api"
+version = "0.1.0"
+description = ""
+authors = [
+    {name = "Victor Emeka"}
+]
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "flask (>=3.1.1,<4.0.0)",
+    "flask-smorest (>=0.46.1,<0.47.0)",
+    "dotenv (>=0.9.9,<0.10.0)",
+    "google-genai (>=1.27.0,<2.0.0)"
+]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"

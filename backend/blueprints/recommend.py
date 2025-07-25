@@ -10,7 +10,7 @@ tastes = [
         "id": UUID("bcaec2b4-1af7-468c-b475-5c437ccde903"),
         "created": datetime.now(timezone.utc),
         "taste": {
-
+            # List of entity types, filters, esc/
         },
     }
 ]

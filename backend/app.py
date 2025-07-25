@@ -9,7 +9,7 @@ load_dotenv()
 server = Flask(__name__)
 
 class APIConfig:
-    API_TITLE = "TRAVEL GUIDE API"
+    API_TITLE = "" #TODO: Implement
     API_VERSION = "v1"
     OPENAPI_VERSION = "3.1.0"
     OPENAPI_URL_PREFIX = "/"

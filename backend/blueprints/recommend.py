@@ -1,5 +1,5 @@
-import datetime
-from time import timezone
+from datetime import datetime, timezone
+
 from uuid import UUID
 from flask_smorest import Blueprint
 

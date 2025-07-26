@@ -1,8 +1,9 @@
 import requests
-from flask import current_app
+
 from google import genai
 from urllib import parse
 from enum import Enum
+
 
 
 QLOO_API_URL = "https://hackathon.api.qloo.com/v2"
@@ -29,12 +30,12 @@ def generate_summary():
 
 
 
-def generate_recommendation(query):
-    url = f"{QLOO_API_URL}/insights?filter.type={parse.quote(query)}"
+def generate_recommendation(config, query):
+    url = parse.quote(f"{QLOO_API_URL}/insights?filter.type={query}")
 
     headers = {
         "accept": "application/json",
-        "X-Api-Key": current_app.config['QLOO_API_KEY']
+        "X-Api-Key": config
         }
 
     response = requests.get(url, headers=headers)

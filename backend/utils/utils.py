@@ -30,9 +30,9 @@ class QlooData(Enum):
     }
 
 def entity_search(query:str, page_index=1):
-    url = f"{QlooData.api_url}/search?query={parse.quote(query)}&page={page_index}"
+    url = f"{QlooData.api_url.value}/search?query={parse.quote(query)}&page={page_index}"
     try:
-        response = requests.get(url, headers=QlooData.headers, timeout=10)
+        response = requests.get(url, headers=QlooData.headers.value, timeout=10)
     except requests.exceptions.RequestException as e:
         print(f"Qloo API failed: {e}")
         return
@@ -43,17 +43,35 @@ def entity_search(query:str, page_index=1):
         if entity['types'][0] == 'urn:entity:destination':
             return entity['entity_id']
 
-
-def get_entity_affinities(entity_id:str, filters:dict[str]):
-    url = f"{QlooData.api_url}/v2/insights?filter.type={filters["type"]}&filter.location={entity_id}&filter.tag.types={"urn:tag:sustainability_initiative:qloo"}"
+def get_sustainability_tags():
+    url = f"{QlooData.api_url.value}/v2/insights?filter.type={"urn:tag"}&filter.tag.types={"urn:tag:sustainability_initiative:qloo"}&take=50"
     try:
-        response = requests.get(url, headers=QlooData.headers, timeout=10)
+        response = requests.get(url, headers=QlooData.headers.value, timeout=10)
+    except requests.exceptions.RequestException as e:
+        print(f"Qloo API failed: {e}")
+        return
+    data = response.json()
+    return data['results']['tags']
+
+def get_similar_entity_affinities(query:str, filters:dict[str]):
+    url = f"{QlooData.api_url.value}/v2/insights?filter.type={filters["type"]}&filter.location.query={query}&signal.interests.tags={"urn:tag:sustainability_initiative:qloo"}&take=10"
+    try:
+        response = requests.get(url, headers=QlooData.headers.value, timeout=10)
+        print(f"status code -> {response.status_code}")
     except requests.exceptions.RequestException as e:
         print(f"Qloo API failed: {e}")
         return
     
-    data = response.json()
-    return data["results"]['tags']
+    data = response.json()['results']['entities']
+    return data # list[str]
+
+# get_similar_entity_affinities(
+#     "lisbon",
+# {
+#     "type" : "urn:entity:place",
+#     "tag" : "urn:tag:demographic_characteristic:qloo",
+# })
+
 
         
 def generate_summary():

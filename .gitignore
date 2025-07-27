@@ -161,4 +161,4 @@ dmypy.json
 cython_debug/
 
 # Testing files
-test*.py
+test*.*

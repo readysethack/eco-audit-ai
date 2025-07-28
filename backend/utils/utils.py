@@ -11,17 +11,6 @@ load_dotenv()
 # Insights -> "/v2/insights"
 # Search -> "/search?query="
 
-class EntityType(Enum):
-    artist = "urn:entity:artist"
-    brand = "urn:entity:brand"
-    book = "urn:entity:book"
-    destination = "urn:entity:destination"
-    movie = "urn:entity:movie"
-    person = "urn:entity:person"
-    place = "urn:entity:place"
-    podcast = "urn:entity:podcast"
-    tv_show = "urn:entity:tv_show"
-    video_game = "urn:entity:video_game"
 
 class QlooData(Enum):
     api_url = "https://hackathon.api.qloo.com"
@@ -29,20 +18,6 @@ class QlooData(Enum):
         "accept": "application/json",
         "X-Api-Key": os.getenv("QLOO_API_KEY")
     }
-
-def entity_search(query:str, page_index=1):
-    url = f"{QlooData.api_url.value}/search?query={parse.quote(query)}&page={page_index}"
-    try:
-        response = requests.get(url, headers=QlooData.headers.value, timeout=10)
-    except requests.exceptions.RequestException as e:
-        print(f"Qloo API failed: {e}")
-        return
-    
-    data = response.json()["results"]
-
-    for entity in data:
-        if entity['types'][0] == 'urn:entity:destination':
-            return entity['entity_id']
 
 def get_sustainability_tags(page_index = 1):
     index = page_index
@@ -90,12 +65,6 @@ def get_similar_entity_affinities(query:str, filters:dict[str]):
 
     return output
 
-# get_similar_entity_affinities(
-#     "lisbon",
-# {
-#     "type" : "urn:entity:place",
-# })
-
 class Summary(BaseModel): # Response Schema
     business_name : str
     sustainability_score : float
@@ -110,12 +79,12 @@ def generate_summary(title, location, products):
 
     prompt = f"""
         You are a sustainability consultant and cultural trend analyst. 
-        Using taste data from Qloo and regional climate data, generate an insightful and localized 1-page sustainability audit tailored to small businesses.
+        Using insight data from Qloo, generate an insightful and localized 1-page sustainability audit tailored to small businesses.
 
         INPUT
-            Business Type: {title}
-            Location: {location}
-            Product Offerings: {products}
+            business_ype: {title}
+            location: {location}
+            oferings: {products}
 
         Sustainability data (tags): {get_sustainability_tags()}
         Insight Data from businesses in the region: {similar_business_data}
@@ -160,6 +129,3 @@ def generate_summary(title, location, products):
         },
     )
     return response.text
-
-results = generate_summary("independent vegan café", "brussels", ["oat milk", "handmade ceramics", "locally roasted beans"])
-print(results)

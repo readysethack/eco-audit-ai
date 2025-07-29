@@ -128,4 +128,12 @@ def generate_summary(title, location, products):
             "response_schema": Summary,
         },
     )
-    return response.text
+    return response.model_dump()['parsed']
+
+# summary = generate_summary(
+#     "independent vegan café",
+#     "brussels",
+#     ["oat milk", "handmade ceramics", "locally roasted beans"],
+# )
+
+# print(summary['parsed'], type(summary['parsed']))

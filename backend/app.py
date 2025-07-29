@@ -118,7 +118,6 @@ class AuditCollection(MethodView):
             location=data["location"],
             products=data["products"]
         )
-        print(summary)
         new_audit = {
             "id": uuid4(),
             "created": datetime.now(timezone.utc),

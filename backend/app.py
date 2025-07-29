@@ -47,7 +47,7 @@ audits = [
         "id" : uuid4(),
         "created": datetime.now(timezone.utc),
         "business_name": "The Independent Vegan Café, Brussels",
-        "sustainability_score": 0,
+        "sustainability_score": 8.6,
         "strengths": [
             "Core vegan and plant-based offerings inherently reduce environmental footprint, aligning with growing consumer demand for sustainable dietary choices in Brussels.",
             "Strong commitment to local sourcing, exemplified by locally roasted beans, minimizes transportation emissions and supports the local economy.",

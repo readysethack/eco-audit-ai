@@ -29,12 +29,7 @@ def get_sustainability_tags(page_index = 1):
         return
     data = response.json()['results']['tags']
 
-    output = []
-    for tag in data:
-        cleaned_data = {}
-        cleaned_data["name"] = tag["name"]
-        cleaned_data["type"] = tag["subtype"].split(":")[2]
-        output.append(cleaned_data)
+    output = [tag["name"] for tag in data]
     
     if len(data) >= 50:
         index += 1
@@ -43,7 +38,7 @@ def get_sustainability_tags(page_index = 1):
     return output
 
 def get_similar_entity_affinities(query:str, filters:dict[str]):
-    url = f"{QlooData.api_url.value}/v2/insights?filter.type={filters["type"]}&filter.location.query={query}&signal.interests.tags={"urn:tag:sustainability_initiative:qloo"}&take=2"
+    url = f"{QlooData.api_url.value}/v2/insights?filter.type={filters["type"]}&filter.location.query={query}&signal.interests.tags={"urn:tag:sustainability_initiative:qloo"}&take=10"
     try:
         response = requests.get(url, headers=QlooData.headers.value, timeout=10)
         print(f"status code -> {response.status_code}")
@@ -65,6 +60,38 @@ def get_similar_entity_affinities(query:str, filters:dict[str]):
 
     return output
 
+def calculate_sustainability_score(business_data):
+    base_tags = get_sustainability_tags()
+
+    scores = [60] # Buffer
+    for business in business_data:
+        # Tag Match
+        tag_score  = 0
+        total_tag_score = 0
+        for tag in business["tags"]:
+            for name, weight in tag.items():
+                if name in base_tags:
+                    tag_score += weight
+                total_tag_score += weight
+        tag_score = (tag_score/total_tag_score) * 25
+
+        # Affinity Match
+        affinity_score = business["affinity"] * 25
+
+        # Popularity Match
+        popularity_score = business["popularity"] * 25
+
+        # Keyword Match
+        keyword_score = 0
+        keywords = business["keywords"]
+        for keyword in keywords:
+            if keyword in base_tags:
+                keyword_score += 1
+        keyword_score = (keyword_score/len(keywords)) * 25
+    scores.append(tag_score + affinity_score + popularity_score + keyword_score)
+    
+    return round(sum(scores)/len(scores))
+
 class Summary(BaseModel): # Response Schema
     business_name : str
     sustainability_score : float
@@ -76,21 +103,22 @@ def generate_summary(title, location, products):
     similar_business_data = get_similar_entity_affinities(location, {
         "type" : "urn:entity:place",
     })
-
+    sustainability_score = calculate_sustainability_score(business_data=similar_business_data)
     prompt = f"""
         You are a sustainability consultant and cultural trend analyst. 
         Using insight data from Qloo, generate an insightful and localized 1-page sustainability audit tailored to small businesses.
 
         INPUT
-            business_ype: {title}
+            business_type: {title}
             location: {location}
             oferings: {products}
 
         Sustainability data (tags): {get_sustainability_tags()}
         Insight Data from businesses in the region: {similar_business_data}
+        Sustainability Score: {sustainability_score}
 
         EXAMPLE INSIGHT DATA
-            {{ name : Brandoa, keywords : ['rodizio', 'friday'], tags : [{{'Lunch': 0.6875}},{{'Lot': 0.3456}}], affinity : 0.23}}
+            {{ name : Brandoa, keywords : ['rodizio', 'friday'], tags : [{{'Lunch': 0.6875}},{{'Lot': 0.3456}}], affinity : 0.23, popularity : 0.40}}
 
         Insight data is primarily used to check against the sustainability data to check if it there is cross-domain data.
         Understanding Insight Data
@@ -113,7 +141,7 @@ def generate_summary(title, location, products):
 
         EXPECTED OUTPUT
             Name : Name of business and location
-            Score : sustainability score out of 10. Calculated by determining "closeness" of business input to sustainability and insight data. completey based off metrics.
+            Score : provided metric
             Strengths : Top 3 sustainability strengths
             Improvements : 2 improvement opportunities
             Tip : Industry-specific eco-tip
@@ -130,10 +158,8 @@ def generate_summary(title, location, products):
     )
     return response.model_dump()['parsed']
 
-# summary = generate_summary(
-#     "independent vegan café",
-#     "brussels",
-#     ["oat milk", "handmade ceramics", "locally roasted beans"],
-# )
-
-# print(summary['parsed'], type(summary['parsed']))
+print(generate_summary(
+    "lisbon",
+    "vegan cafe",
+    ["coffee", "leather", "decaf"]
+))

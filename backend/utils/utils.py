@@ -105,47 +105,61 @@ def generate_summary(title, location, products):
     })
     sustainability_score = calculate_sustainability_score(business_data=similar_business_data)
     prompt = f"""
-        You are a sustainability consultant and cultural trend analyst. 
-        Using insight data from Qloo, generate an insightful and localized 1-page sustainability audit tailored to small businesses.
+        You are an expert sustainability analyst. Your task is to generate a concise, data-driven sustainability audit based *only* on the provided Qloo insight data.
 
-        INPUT
-            business_type: {title}
-            location: {location}
-            oferings: {products}
+        **Primary Goal:** Analyze the provided `Insight Data` for a business and compare it against the `Sustainability data (tags)` to identify strengths, weaknesses, and actionable advice.
 
-        Sustainability data (tags): {get_sustainability_tags()}
-        Insight Data from businesses in the region: {similar_business_data}
-        Sustainability Score: {sustainability_score}
+        **STRICT RULES:**
+        1.  **No External Knowledge:** Use ONLY the data provided in this prompt. Do not use any information you were trained on about sustainability in general.
+        2.  **Data-Driven Only:** Every statement in the output (strengths, improvements, tip) MUST be directly traceable to a piece of data in the input.
+        3.  **Adhere to Schema:** The final output MUST be a valid JSON object matching the `EXPECTED OUTPUT` schema.
+        4.  **Handle Missing Data:** If a conclusion cannot be drawn from the data for a specific field, state "Insufficient data to determine." Do not invent information.
 
-        EXAMPLE INSIGHT DATA
-            {{ name : Brandoa, keywords : ['rodizio', 'friday'], tags : [{{'Lunch': 0.6875}},{{'Lot': 0.3456}}], affinity : 0.23, popularity : 0.40}}
+        ---
+        **INPUT DATA**
 
-        Insight data is primarily used to check against the sustainability data to check if it there is cross-domain data.
-        Understanding Insight Data
-            
-            Affinity: Affinity scores show how strongly a demographic group / entity aligns with your input (e.g., an artist or brand). Scores are returned as decimals, where:
+        *   **business_type:** {title}
+        *   **location:** {location}
+        *   **offerings:** {products}
+        *   **Sustainability Score:** {sustainability_score}
+        *   **Sustainability data (tags):** {get_sustainability_tags()}
+        *   **Insight Data from businesses in the region:** {similar_business_data}
 
-            0.24 = 24% more likely than average to like it
-            -0.40 = 40% less likely than average
-            Values near 0 = average alignment
+        ---
+        **REASONING FRAMEWORK (How to generate the audit):**
 
-            Positive scores mean stronger-than-average interest,
-            negative scores mean weaker-than-average interest.
+        1.  **To determine `strengths`:**
+            *   Look for businesses in the `Insight Data` with high `affinity` or `popularity` scores.
+            *   Identify the `tags` or `keywords` associated with these successful businesses that are also present in the `Sustainability data (tags)`.
+            *   These represent existing, successful sustainability practices in the area. List the top 3 as strengths.
 
-            Tags: These influence affinity scores when paired with their corresponding weights. A weight property will indicate the strength of influence for each tag in your list. Weights must be greater than 0 and are relative. So, a weight of 20 means that tag will more heavily influence affinity scores than a weight of 7.
-            Structure of a tag: {{name : weight}}
+        2.  **To determine `improvements`:**
+            *   Look for `tags` from the `Sustainability data (tags)` that are RARE or ABSENT in the `Insight Data` from the region.
+            *   These represent untapped opportunities for improvement. List the top 2.
 
-            Popularity: Popularity scores rank entities within their category, indicating their relative signal strength.
+        3.  **To determine the `tip`:**
+            *   Select the most impactful "improvement" you identified.
+            *   Frame it as a single, actionable tip for the business. For example, if "renewable energy" is a missing tag, the tip could be "Consider installing solar panels to align with growing consumer interest in renewable energy."
 
-            Keywords: These are random words associated with the business, arranged in descending order for importance. That is, most important first, all the way to least.
+        ---
+        **EXPECTED OUTPUT (JSON Schema)**
+        {{
+            "business_name": "{title} at {location}",
+            "sustainability_score": {sustainability_score},
+            "strengths": [
+                "A data-driven strength based on the reasoning framework.",
+                "A second data-driven strength.",
+                "A third data-driven strength."
+            ],
+            "improvements": [
+                "A data-driven improvement opportunity.",
+                "A second data-driven improvement opportunity."
+            ],
+            "tip": "A single, actionable tip derived from the improvements."
+        }}
 
-        EXPECTED OUTPUT
-            Name : Name of business and location
-            Score : provided metric
-            Strengths : Top 3 sustainability strengths
-            Improvements : 2 improvement opportunities
-            Tip : Industry-specific eco-tip
-
+        ---
+        Now, begin your analysis.
         """
     client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
     response = client.models.generate_content(

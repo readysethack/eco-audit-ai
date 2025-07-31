@@ -4,7 +4,7 @@ from flask import Flask
 from flask_smorest import Api, Blueprint
 from flask_cors import CORS
 from datetime import datetime, timezone
-from uuid import uuid4
+from uuid import uuid4, UUID
 from flask.views import MethodView
 import os
 from dotenv import load_dotenv
@@ -15,6 +15,11 @@ load_dotenv()
 
 server = Flask(__name__)
 CORS(server)
+
+# Add a health check endpoint
+@server.route('/health')
+def health_check():
+    return {"status": "ok", "timestamp": datetime.now(timezone.utc).isoformat()}
 
 class APIConfig:
     API_TITLE = "eco-audit-api" 
@@ -33,20 +38,9 @@ api = Api(server)
 
 bl = Blueprint("audit", "audit", url_prefix="/audit", description="AUDIT API")
 
-# assessment_data = [
-#     {
-#         "id": UUID("bcaec2b4-1af7-468c-b475-5c437ccde903"),
-#         "created": datetime.now(timezone.utc),
-#         "business_type" : "independent vegan café",
-#         "location" : "brussels",
-#         "products" :  ["oat milk", "handmade ceramics", "locally roasted beans"],
-#     }
-# ]
-
-
 audits = [
     {
-        "id" : uuid4(),
+        "id" : UUID("95b0f982-ee69-4c71-9898-eeb26717f89b"),
         "created": datetime.now(timezone.utc),
         "business_name": "The Independent Vegan Café, Brussels",
         "sustainability_score": 86,
@@ -71,8 +65,8 @@ class CreateAudit(Schema): # Response Schema
     tip = fields.Str(required=True)
 
 class Audit(CreateAudit):
-    id = fields.UUID(required=True),
-    created = fields.DateTime(),
+    id = fields.UUID(required=True)
+    created = fields.DateTime()
 
 class CreateAssessment(Schema):
     business_type = fields.Str(required=True)
@@ -104,44 +98,53 @@ class AuditCollection(MethodView):
     @bl.arguments(ListAuditParameters, location="query")
     @bl.response(status_code=200, schema=ListAudits)
     def get(self, parameters):
-        return {
-            "audits" : sorted(
-                audits,
-                key= lambda data : data[parameters["order_by"].value],
-                reverse= parameters["order"] == SortDirectionEnum.desc
-            )
-        }
+        try:
+            return {
+                "audits" : sorted(
+                    audits,
+                    key= lambda data : data[parameters["order_by"].value],
+                    reverse= parameters["order"] == SortDirectionEnum.desc
+                )
+            }
+        except Exception as e:
+            server.logger.error(f"Error in audit list endpoint: {str(e)}")
+            return {"error": "Internal server error"}, 500
 
     @bl.arguments(CreateAssessment)
     @bl.response(status_code=201, schema=Audit)
     def post(self, data):
-        summary = generate_summary(
-            title=data["business_type"],
-            location=data["location"],
-            products=data["products"]
-        )
-        new_audit = {
-            "id": uuid4(),
-            "created": datetime.now(timezone.utc),
-            "business_name": summary["business_name"],
-            "sustainability_score": summary["sustainability_score"],
-            "strengths": summary["strengths"],
-            "improvements": summary["improvements"],
-            "tip": summary["tip"]
-        }
+        try:
+            server.logger.info(f"Received audit request: {data}")
+            summary = generate_summary(
+                title=data["business_type"],
+                location=data["location"],
+                products=data["products"]
+            )
+            new_audit = {
+                "id": uuid4(),
+                "created": datetime.now(timezone.utc),
+                "business_name": summary["business_name"],
+                "sustainability_score": summary["sustainability_score"],
+                "strengths": summary["strengths"],
+                "improvements": summary["improvements"],
+                "tip": summary["tip"]
+            }
 
-        audits.append(new_audit)
-        return new_audit
+            audits.append(new_audit)
+            return new_audit
+        except Exception as e:
+            server.logger.error(f"Error in audit creation: {str(e)}")
+            return {"error": "Internal server error"}, 500
 
 
-# @bl.route("/generate/<uuid:assessment_id>")
-# class GenerateAudit(MethodView):
+@bl.route("/<uuid:audit_id>")
+class GenerateAudit(MethodView):
 
-#     @bl.response(status_code=200)
-#     def get(self):
-#         pass
-
-#     def delete(self):
-#         pass
+    @bl.response(status_code=200)
+    def get(self, audit_id):
+        for audit in audits:
+            if audit_id == audit["id"]:
+                return audit
+        return {"error": f"Audit with id {audit_id} not found"}
 
 api.register_blueprint(bl)

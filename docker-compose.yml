@@ -16,3 +16,4 @@ services:
       - FLASK_ENV=${FLASK_ENV}
       - GEMINI_API_KEY=${GEMINI_API_KEY}
       - QLOO_API_KEY=${QLOO_API_KEY}
+      - VITE_API_URL=http://backend:5000

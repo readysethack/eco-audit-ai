@@ -1,103 +1,197 @@
 # EcoAudit AI
 
-EcoAudit AI is a full-stack application that generates sustainability audits for businesses using Qloo's cultural insights API and Gemini AI. The application provides actionable recommendations to improve sustainability practices.
+<div align="center">
+  <img src="https://img.shields.io/badge/React-18-blue" alt="React 18" />
+  <img src="https://img.shields.io/badge/TypeScript-5-blue" alt="TypeScript 5" />
+  <img src="https://img.shields.io/badge/Flask-3-green" alt="Flask 3" />
+  <img src="https://img.shields.io/badge/Gemini_AI-2.5-purple" alt="Gemini AI" />
+  <img src="https://img.shields.io/badge/Docker-✓-blue" alt="Docker" />
+  <img src="https://img.shields.io/badge/License-MIT-yellow" alt="License: MIT" />
+</div>
 
+<p align="center">
+  <b>An AI-powered sustainability audit platform for businesses</b>
+</p>
 
-## Overview
+---
 
-This project combines:
+## 🌟 Overview
 
-- **AI-powered sustainability analysis**: Leveraging Qloo's cultural data API and Gemini AI to generate customized sustainability audits
-- **Modern web frontend**: Built with React, TypeScript, and Vite
-- **Robust backend API**: Developed with Flask and Flask-SMOREST
+EcoAudit AI is a comprehensive full-stack application that helps businesses assess and improve their sustainability practices. By combining Qloo's cultural insights API with Google's Gemini AI, the platform delivers tailored sustainability audits with actionable recommendations.
 
-The application analyzes businesses based on their type, location, and products to provide:
-- Sustainability scores
-- Key strengths in current practices
-- Improvement recommendations
-- Actionable tips specific to the business context
+### Key Capabilities
 
-## Project Structure
+- 🔍 **Contextual Analysis**: Evaluates businesses based on type, location, and offerings
+- 📊 **Sustainability Scoring**: Provides objective metrics for sustainability performance
+- 💡 **AI-Powered Insights**: Identifies strengths and improvement opportunities
+- 🎯 **Actionable Recommendations**: Delivers specific, practical sustainability tips
+- 📱 **Modern Interface**: Offers an intuitive, responsive user experience
 
-```
-eco-audit-ai/
-├── backend/           # Flask API for sustainability audits
-│   ├── app.py         # Main API endpoints
-│   ├── utils/         # Utility functions for API integration
-│   ├── README.md      # Backend documentation
-│   └── pyproject.toml # Python dependencies
-│
-└── frontend/          # React frontend application
-    ├── src/           # Source code
-    │   ├── components/# React components
-    │   ├── App.tsx    # Main application component
-    │   └── ...        # Other source files
-    ├── README.md      # Frontend documentation
-    └── package.json   # Node.js dependencies
-```
+<p align="center">
+  <img src="https://i.imgur.com/placeholder-screenshot.png" alt="EcoAudit AI Screenshot" width="600" />
+</p>
 
-## Quick Start
+## 🚀 Getting Started
 
 ### Prerequisites
 
-- Python 3.13 or higher
-- Node.js 16 or higher
-- Poetry (Python dependency management)
-- npm or yarn
-- Qloo API key
-- Gemini API key
+- Docker and Docker Compose (recommended for easy setup)
+- Alternatively:
+  - Python 3.9+ with Poetry for backend
+  - Node.js 16+ with npm/yarn for frontend
+- API Keys:
+  - Qloo API key
+  - Gemini API key
 
-### 1. Backend Setup
+### Quick Start with Docker
 
-```bash
-# Navigate to the backend directory
-cd backend
+The fastest way to get EcoAudit AI running:
 
-# Install dependencies
-poetry install
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/readysethack/eco-audit-ai.git
+   cd qloo-hackathon-app
+   ```
 
-# Create a .env file
-echo "QLOO_API_KEY=your_qloo_api_key" > .env
-echo "GEMINI_API_KEY=your_gemini_api_key" >> .env
+2. **Configure environment variables**
+   Create a `.env` file in the root directory:
+   ```
+   FLASK_ENV=development
+   GEMINI_API_KEY=your_gemini_api_key
+   QLOO_API_KEY=your_qloo_api_key
+   VITE_API_URL=http://backend:5000
+   ```
 
-# Start the backend server
-poetry run flask run --reload
+3. **Build and start the containers**
+   ```bash
+   docker-compose up -d
+   ```
+
+4. **Access the application**
+   - Frontend: [http://localhost:3000](http://localhost:3000)
+   - Backend API: [http://localhost:5000](http://localhost:5000)
+   - API Documentation: [http://localhost:5000/docs](http://localhost:5000/docs)
+
+### Manual Setup
+
+#### Backend
+
+1. **Navigate to backend directory**
+   ```bash
+   cd backend
+   ```
+
+2. **Install dependencies**
+   ```bash
+   poetry install
+   ```
+
+3. **Configure environment**
+   Create a `.env` file in the `backend/` directory:
+   ```
+   QLOO_API_KEY=your_qloo_api_key
+   GEMINI_API_KEY=your_gemini_api_key
+   FLASK_ENV=development
+   ```
+
+4. **Run the server**
+   ```bash
+   poetry run flask run --reload
+   ```
+
+   The API will be available at [http://localhost:5000](http://localhost:5000)
+
+#### Frontend
+
+1. **Navigate to frontend directory**
+   ```bash
+   cd frontend
+   ```
+
+2. **Install dependencies**
+   ```bash
+   npm install
+   # or
+   yarn install
+   ```
+
+3. **Configure environment**
+   Create a `.env.local` file in the `frontend/` directory:
+   ```
+   VITE_API_URL=http://localhost:5000
+   ```
+
+4. **Start development server**
+   ```bash
+   npm run dev
+   # or
+   yarn dev
+   ```
+
+   The application will be available at [http://localhost:5173](http://localhost:5173)
+
+## 🏗️ Project Architecture
+
+EcoAudit AI follows a modern client-server architecture:
+
+### Backend (Flask)
+
+- RESTful API built with Flask and Flask-SMOREST
+- Integration with Qloo API for cultural insights
+- Integration with Gemini AI for analysis and report generation
+- Data validation with Marshmallow schemas
+- Robust error handling with fallback responses
+
+### Frontend (React)
+
+- Modern React with TypeScript for type safety
+- Vite for fast development and optimized builds
+- Component-based architecture with proper separation of concerns
+- Custom hooks for business logic
+- Axios for API communication
+- shadcn/ui components for clean, accessible UI
+
+## 📂 Project Structure
+
+```
+eco-audit-ai/
+├── docker-compose.yml      # Docker Compose configuration
+├── README.md               # This file
+├── test_data_search.txt    # Test data for search functionality
+│
+├── backend/                # Flask API for sustainability audits
+│   ├── app.py              # Main API endpoints and routes
+│   ├── Dockerfile          # Backend container configuration
+│   ├── pyproject.toml      # Poetry dependency management
+│   ├── requirements.txt    # Python dependencies
+│   ├── README.md           # Backend-specific documentation
+│   └── utils/              # Utility functions for API integration
+│       ├── utils.py        # Core business logic
+│       └── test_data.txt   # Test data for development
+│
+└── frontend/               # React frontend application
+    ├── components.json     # UI component configuration
+    ├── Dockerfile          # Frontend container configuration
+    ├── nginx.conf          # Nginx configuration for production
+    ├── package.json        # Node.js dependencies
+    ├── README.md           # Frontend-specific documentation
+    ├── src/                # Source code
+    │   ├── components/     # React components
+    │   │   ├── eco-audit/  # Business domain components
+    │   │   └── ui/         # Reusable UI components
+    │   ├── hooks/          # Custom React hooks
+    │   ├── lib/            # Utility functions
+    │   ├── services/       # API service layer
+    │   ├── types/          # TypeScript type definitions
+    │   └── App.tsx         # Main application component
+    └── vite.config.ts      # Vite configuration
 ```
 
-The backend API will be available at [http://localhost:5000](http://localhost:5000) with interactive API documentation at [http://localhost:5000/docs](http://localhost:5000/docs).
+## 🌐 API Documentation
 
-### 2. Frontend Setup
+### Key Endpoints
 
-```bash
-# Navigate to the frontend directory
-cd frontend
-
-# Install dependencies
-npm install
-
-# Start the development server
-npm run dev
-```
-
-The frontend application will be available at [http://localhost:5173](http://localhost:5173).
-
-## How It Works
-
-1. **Data Collection**: The user enters information about a business, including its type, location, and products/offerings.
-
-2. **Cultural Context Analysis**: The backend uses Qloo's API to gather relevant cultural insights about similar businesses, sustainability trends in the specified location, and industry-specific sustainability practices.
-
-3. **AI Audit Generation**: Gemini AI processes this information to create a comprehensive sustainability audit that includes:
-   - Overall sustainability score
-   - Strengths in current practices
-   - Areas for improvement
-   - A specific, actionable tip
-
-4. **Results Presentation**: The frontend displays the audit results in a user-friendly format, allowing users to sort and filter multiple audit reports.
-
-## API Endpoints
-
-### Create a Sustainability Audit
+#### Create a Sustainability Audit
 
 ```
 POST /audit/list
@@ -112,38 +206,67 @@ POST /audit/list
 }
 ```
 
-### List Sustainability Audits
+**Response (201 Created):**
+```json
+{
+  "id": "bcaec2b4-1af7-468c-b475-5c437ccde903",
+  "created": "2025-07-31T21:04:44.000000Z",
+  "business_name": "The Independent Vegan Café, Brussels",
+  "sustainability_score": 86,
+  "strengths": [
+    "Core vegan and plant-based offerings inherently reduce environmental footprint...",
+    "Strong commitment to local sourcing...",
+    "Promotion of reusability through handmade ceramics..."
+  ],
+  "improvements": [
+    "Implement a comprehensive waste management program...",
+    "Conduct an energy audit to identify opportunities..."
+  ],
+  "tip": "To further enhance your local appeal and sustainability..."
+}
+```
+
+#### List Sustainability Audits
 
 ```
 GET /audit/list?order_by=sustainability_score&order=desc
 ```
 
-## Development
+See [Backend README](backend/README.md) for complete API documentation.
 
-### Backend
+## ✨ Application Features
 
-The backend is built with Flask and uses the following key components:
+### 1. Multi-Step Audit Form
 
-- **Flask-SMOREST**: For building a RESTful API with automatic documentation
-- **Marshmallow**: For data validation and serialization
-- **dotenv**: For environment variable management
-- **Qloo API**: For cultural insights data
-- **Gemini API**: For AI-powered analysis
+The user journey begins with a step-by-step form collecting:
+- Business name
+- Business type
+- Location information
+- Products and offerings
 
-For more details, see the [backend README](backend/README.md).
+### 2. AI-Powered Analysis
 
-### Frontend
+Behind the scenes, the application:
+- Queries Qloo API for cultural and regional insights
+- Identifies relevant sustainability practices
+- Uses Gemini AI to generate context-aware recommendations
 
-The frontend is built with React and uses the following key components:
+### 3. Comprehensive Audit Report
 
-- **React**: For building the user interface
-- **TypeScript**: For type-safe code
-- **Axios**: For API requests
-- **Vite**: For fast development and building
+Each audit provides:
+- Overall sustainability score (0-100)
+- Three key strengths with detailed explanations
+- Two priority improvement areas
+- One specific, actionable sustainability tip
 
-For more details, see the [frontend README](frontend/README.md).
+### 4. Audit History
 
-## Contributing
+Users can:
+- Access previously generated audits
+- Sort audits by name, date, or score
+- Compare different businesses or track improvements
+
+## 🤝 Contributing
 
 We welcome contributions to improve EcoAudit AI!
 
@@ -153,11 +276,13 @@ We welcome contributions to improve EcoAudit AI!
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
-## License
+## 📝 License
 
-MIT
+This project is licensed under the MIT License - see the LICENSE file for details.
 
-## Acknowledgments
+## 🙏 Acknowledgments
 
-- [Qloo API](https://qloo.com/) for providing cultural insights data
-- [Gemini AI](https://gemini.google.com/) for powering the sustainability analysis
+- [Qloo](https://qloo.com/) for providing the cultural insights API
+- [Google Gemini AI](https://gemini.google.com/) for powering the sustainability analysis
+- [shadcn/ui](https://ui.shadcn.com/) for the beautiful UI components
+- [Flask-SMOREST](https://flask-smorest.readthedocs.io/) for API framework

@@ -1,28 +1,9 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import type { FormData, AuditResult, ViewState } from "@/types/eco-audit"
 import { submitAudit, getAuditHistory, getAuditById } from "@/services/auditService"
 import { useLoadingAnimation } from "@/hooks/useLoadingAnimation"
-
-// Define types locally as a workaround for path resolution issues
-interface FormData {
-  businessName: string;
-  businessType: string;
-  location: string;
-  products: string;
-}
-
-interface AuditResult {
-  id: string;
-  created: string;
-  business_name: string;
-  sustainability_score: number;
-  strengths: string[];
-  improvements: string[];
-  tip: string;
-}
-
-type ViewState = "form" | "loading" | "report";
 
 // Components
 import AuditForm from "@/components/eco-audit/AuditForm"
@@ -32,6 +13,12 @@ import ReportView from "@/components/eco-audit/ReportView"
 export default function EcoAuditApp() {
   // State
   const [viewState, setViewState] = useState<ViewState>("form")
+  const [formData, setFormData] = useState<FormData>({
+    businessName: "",
+    businessType: "",
+    location: "",
+    products: "",
+  })
   const [auditResult, setAuditResult] = useState<AuditResult | null>(null)
   
   // History state
@@ -44,6 +31,7 @@ export default function EcoAuditApp() {
 
   // Handle form submission
   const handleSubmit = async (data: FormData) => {
+    setFormData(data)
     setViewState("loading")
     simulateLoading()
 
@@ -117,6 +105,12 @@ export default function EcoAuditApp() {
   // Start a new audit
   const handleStartNewAudit = () => {
     setViewState("form")
+    setFormData({
+      businessName: "",
+      businessType: "",
+      location: "",
+      products: "",
+    })
     setAuditResult(null)
   }
 

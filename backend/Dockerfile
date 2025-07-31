@@ -19,4 +19,5 @@ COPY . .
 
 EXPOSE 5000
 
-CMD ["gunicorn", "-b", "0.0.0.0:5000", "app:server"]
+# More robust Gunicorn configuration with timeout settings
+CMD ["gunicorn", "--workers=4", "--threads=2", "--timeout=120", "--keep-alive=5", "--log-level=info", "--access-logfile=-", "--error-logfile=-", "-b", "0.0.0.0:5000", "app:server"]

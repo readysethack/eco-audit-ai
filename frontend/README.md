@@ -1,69 +1,173 @@
-# React + TypeScript + Vite
+# EcoAudit AI Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern React application providing an intuitive interface for conducting business sustainability audits using AI-powered analysis. This frontend connects to the EcoAudit AI backend to deliver comprehensive sustainability insights with a clean, responsive UI.
 
-Currently, two official plugins are available:
+## ✨ Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Intuitive Multi-Step Form**: Guide users through the audit process with a clear, step-by-step interface
+- **Dynamic Loading Animations**: Provide visual feedback during audit generation
+- **Comprehensive Report Display**: Present sustainability scores and recommendations in an accessible format
+- **Audit History**: Access and reload previous sustainability audits
+- **Responsive Design**: Works seamlessly across desktop and mobile devices
+- **Modern UI Components**: Built with shadcn/ui for a clean, professional appearance
 
-## Expanding the ESLint configuration
+## 🛠️ Tech Stack
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- **React 18**: Component-based UI library
+- **TypeScript**: Type-safe JavaScript for better development experience
+- **Vite**: Next-generation frontend tooling for faster development
+- **Axios**: Promise-based HTTP client for API requests
+- **shadcn/ui**: High-quality UI components built on Radix UI
+- **Tailwind CSS**: Utility-first CSS framework for styling
+- **Docker**: Containerization for easy deployment
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## 🚀 Getting Started
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
+### Prerequisites
+- Node.js 16.0+
+- npm or yarn
+- Backend API running (see backend README)
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+### Local Development Setup
+
+1. **Clone the Repository and Navigate to Frontend**
+   ```bash
+   git clone https://github.com/readysethack/eco-audit-ai.git
+   cd qloo-hackathon-app/frontend
+   ```
+
+2. **Install Dependencies**
+   ```bash
+   npm install
+   # or
+   yarn install
+   ```
+
+3. **Configure Environment Variables**
+   Create a `.env.local` file in the `frontend/` directory:
+   ```
+   VITE_API_URL=http://localhost:5000
+   ```
+
+4. **Start the Development Server**
+   ```bash
+   npm run dev
+   # or
+   yarn dev
+   ```
+
+   The application will be available at [http://localhost:5173](http://localhost:5173)
+
+### Building for Production
+
+```bash
+npm run build
+# or
+yarn build
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+The build output will be in the `dist/` directory.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+### Docker Deployment
 
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+1. **Build and Start with Docker Compose**
+   ```bash
+   # From the root directory
+   docker-compose build frontend
+   docker-compose up -d frontend
+   ```
+
+## 📁 Project Structure
+
 ```
+frontend/
+├── public/                # Static assets
+├── src/
+│   ├── assets/            # Images and other assets
+│   ├── components/
+│   │   ├── eco-audit/     # Application-specific components
+│   │   │   ├── AuditForm.tsx
+│   │   │   ├── LoadingView.tsx
+│   │   │   └── ReportView.tsx
+│   │   └── ui/            # Reusable UI components
+│   │       ├── button.tsx
+│   │       ├── card.tsx
+│   │       └── ...
+│   ├── hooks/             # Custom React hooks
+│   │   └── useLoadingAnimation.ts
+│   ├── lib/               # Utility libraries
+│   │   ├── axios.ts       # API client configuration
+│   │   └── utils.ts       # Shared utility functions
+│   ├── services/          # API service layer
+│   │   └── auditService.ts
+│   ├── types/             # TypeScript type definitions
+│   │   └── eco-audit.ts
+│   ├── App.tsx            # Main application component
+│   ├── App.css            # Application styles
+│   ├── main.tsx           # Application entry point
+│   └── index.css          # Global styles
+├── Dockerfile             # Docker configuration
+├── nginx.conf             # Nginx configuration for production
+├── vite.config.ts         # Vite configuration
+├── tsconfig.json          # TypeScript configuration
+└── package.json           # Project dependencies and scripts
+```
+
+## 🧩 Component Architecture
+
+### Main Components
+
+- **App.tsx**: Main container that manages application state and view transitions
+- **AuditForm.tsx**: Multi-step form for collecting business information
+- **LoadingView.tsx**: Animated loading screen displayed during audit generation
+- **ReportView.tsx**: Displays the sustainability audit results
+
+### Data Flow
+
+1. **User Input**: Data collection through AuditForm
+2. **API Requests**: Handled by auditService
+3. **Loading State**: Managed with custom useLoadingAnimation hook
+4. **Display Results**: Presented through ReportView
+
+## 🎯 Application Features
+
+### Multi-Step Form
+The application guides users through a series of inputs to collect necessary information for the sustainability audit:
+- Business name
+- Business type
+- Location
+- Products/offerings
+
+### Loading Animation
+A sophisticated loading animation is displayed while the backend processes the audit request, providing:
+- Progress indication
+- Simulated processing steps
+- Visual engagement during wait time
+
+### Results Display
+The audit results are presented in a clear, informative manner:
+- Overall sustainability score
+- Color-coded score indicator
+- Key strengths (with detailed explanations)
+- Areas for improvement
+- Actionable sustainability tip
+
+### Audit History
+Users can access previous audits through the history menu, allowing them to:
+- View past audit results
+- Compare different businesses
+- Track sustainability progress over time
+
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## 📝 License
+
+MIT

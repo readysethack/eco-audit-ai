@@ -21,7 +21,7 @@ class QlooData(Enum):
 
 def get_sustainability_tags(page_index = 1):
     index = page_index
-    url = f"{QlooData.api_url.value}/v2/insights?filter.type={"urn:tag"}&filter.tag.types={parse.quote("urn:tag:sustainability_initiative:qloo,urn:tag:dietary_option:qloo")}&take=50&page={page_index}"
+    url = f"{QlooData.api_url.value}/v2/insights?filter.type=urn:tag&filter.tag.types={parse.quote('urn:tag:sustainability_initiative:qloo,urn:tag:dietary_option:qloo')}&take=50&page={page_index}"
     try:
         response = requests.get(url, headers=QlooData.headers.value, timeout=10)
     except requests.exceptions.RequestException as e:
@@ -38,7 +38,7 @@ def get_sustainability_tags(page_index = 1):
     return output
 
 def get_similar_entity_affinities(query:str, filters:dict[str]):
-    url = f"{QlooData.api_url.value}/v2/insights?filter.type={filters["type"]}&filter.location.query={query}&signal.interests.tags={"urn:tag:sustainability_initiative:qloo"}&take=10"
+    url = f"{QlooData.api_url.value}/v2/insights?filter.type={filters['type']}&filter.location.query={query}&signal.interests.tags=urn:tag:sustainability_initiative:qloo&take=10"
     try:
         response = requests.get(url, headers=QlooData.headers.value, timeout=10)
         print(f"status code -> {response.status_code}")

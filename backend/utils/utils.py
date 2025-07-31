@@ -157,9 +157,3 @@ def generate_summary(title, location, products):
         },
     )
     return response.model_dump()['parsed']
-
-print(generate_summary(
-    "lisbon",
-    "vegan cafe",
-    ["coffee", "leather", "decaf"]
-))

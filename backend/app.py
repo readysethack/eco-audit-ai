@@ -2,6 +2,7 @@ from enum import Enum
 import json
 from flask import Flask
 from flask_smorest import Api, Blueprint
+from flask_cors import CORS
 from datetime import datetime, timezone
 from uuid import uuid4
 from flask.views import MethodView
@@ -13,6 +14,7 @@ from utils.utils import generate_summary
 load_dotenv()
 
 server = Flask(__name__)
+CORS(server)
 
 class APIConfig:
     API_TITLE = "eco-audit-api" 
@@ -47,7 +49,7 @@ audits = [
         "id" : uuid4(),
         "created": datetime.now(timezone.utc),
         "business_name": "The Independent Vegan Café, Brussels",
-        "sustainability_score": 8.6,
+        "sustainability_score": 86,
         "strengths": [
             "Core vegan and plant-based offerings inherently reduce environmental footprint, aligning with growing consumer demand for sustainable dietary choices in Brussels.",
             "Strong commitment to local sourcing, exemplified by locally roasted beans, minimizes transportation emissions and supports the local economy.",

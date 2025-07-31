@@ -1,51 +1,29 @@
-import React, { useState, useEffect } from 'react';
-import AuditForm from './components/AuditForm';
-import AuditList from './components/AuditList';
-import axios from 'axios';
-import './App.css';
+import { useState, useEffect } from 'react'
+import './App.css'
+import { Button } from "@/components/ui/button"
+import axios, { type AxiosResponse } from 'axios'
 
-interface Audit {
-  id: string;
-  created: string;
-  business_name: string;
-  sustainability_score: number;
-  strengths: string[];
-  improvements: string[];
-  tip: string;
+const api = axios.create({
+  baseURL: 'http://localhost:5000', //TODO: Adjust this to actual backend URL
+});
+
+function getList() {
+  api.get("http://localhost:5000/audit/list")
+  .then(function (response: AxiosResponse){
+    console.log(response.data)
+  })
 }
 
 function App() {
-  const [audits, setAudits] = useState<Audit[]>([]);
-
-  useEffect(() => {
-    // Load initial audits when the component mounts
-    const fetchAudits = async () => {
-      try {
-        const response = await axios.get('/audit/list');
-        setAudits(response.data.audits || []);
-      } catch (error) {
-        console.error('Error fetching audits:', error);
-      }
-    };
-    fetchAudits();
-  }, []);
-
-  const handleAuditCreated = (newAudit: Audit) => {
-    setAudits([newAudit, ...audits]);
-  };
-
+  const onClick = () => {
+    getList()
+  }
   return (
-    <div className="App">
-      <header className="App-header">
-        <h1>EcoAudit AI</h1>
-        <p>Sustainability audits for businesses using AI</p>
-      </header>
-      <main>
-        <AuditForm onAuditCreated={handleAuditCreated} />
-        <AuditList />
-      </main>
+    <div className="flex min-h-svh flex-col items-center justify-center">
+      <Button onClick={onClick}>Click me</Button>
     </div>
-  );
+  )
 }
+export default App
 
-export default App;
+

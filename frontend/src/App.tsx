@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import api from "@/lib/axios"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -116,26 +117,13 @@ export default function EcoAuditForm() {
     }
 
     try {
-      const response = await fetch("/audit/list", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(apiData),
-      })
+      const response = await api.post("/audit/list", apiData);
 
-      if (response.ok) {
-        const result = await response.json()
-
-        // Wait for loading animation to complete
-        setTimeout(() => {
-          setAuditResult(result)
-          setViewState("report")
-        }, 6000)
-      } else {
-        console.error("Failed to submit to Flask API")
-        setViewState("form")
-      }
+      // Wait for loading animation to complete
+      setTimeout(() => {
+        setAuditResult(response.data)
+        setViewState("report")
+      }, 6000)
     } catch (error) {
       console.error("Error submitting to Flask API:", error)
       setViewState("form")
@@ -147,17 +135,11 @@ export default function EcoAuditForm() {
 
     setHistoryLoading(true)
     try {
-      const response = await fetch("/audit/list", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      })
-
-      if (response.ok) {
-        const data = await response.json()
+      const response = await api.get("/audit/list");
+      
+      if (response.status === 200) {
         setHistoryData(
-          data.audits?.map((audit: AuditResult) => ({
+          response.data.audits?.map((audit: AuditResult) => ({
             id: audit.id,
             name: audit.business_name,
           })) || [],
@@ -175,6 +157,32 @@ export default function EcoAuditForm() {
   const handleHistoryItemClick = (auditId: string, auditName: string) => {
     console.log("Selected audit:", auditId, auditName)
     setHistoryOpen(false)
+    
+    // Fetch the specific audit
+    fetchAuditById(auditId);
+  }
+  
+  const fetchAuditById = async (auditId: string) => {
+    setViewState("loading")
+    simulateLoading()
+    
+    try {
+      const response = await api.get(`/audit/${auditId}`);
+      
+      if (response.status === 200) {
+        // Wait for loading animation to complete
+        setTimeout(() => {
+          setAuditResult(response.data)
+          setViewState("report")
+        }, 6000)
+      } else {
+        console.error("Failed to fetch audit details")
+        setViewState("form")
+      }
+    } catch (error) {
+      console.error("Error fetching audit details:", error)
+      setViewState("form")
+    }
   }
 
   const handleStartNewAudit = () => {

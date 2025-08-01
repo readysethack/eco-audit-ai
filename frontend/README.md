@@ -1,119 +1,154 @@
 # EcoAudit AI Frontend
 
-A modern React application providing an intuitive interface for conducting business sustainability audits using AI-powered analysis. This frontend connects to the EcoAudit AI backend to deliver comprehensive sustainability insights with a clean, responsive UI.
+A modern React application that provides a simple, intuitive interface for small businesses to create and view sustainability audits.
 
-## ✨ Features
+## Features
 
-- **Intuitive Multi-Step Form**: Guide users through the audit process with a clear, step-by-step interface
-- **Dynamic Loading Animations**: Provide visual feedback during audit generation
-- **Comprehensive Report Display**: Present sustainability scores and recommendations in an accessible format
-- **Audit History**: Access and reload previous sustainability audits
-- **Responsive Design**: Works seamlessly across desktop and mobile devices
-- **Modern UI Components**: Built with shadcn/ui for a clean, professional appearance
+- **Simple Form Input**: Easy-to-use interface for entering business details
+- **Engaging Loading Experience**: Visual feedback during audit generation
+- **Clear Report Visualization**: Easy-to-understand sustainability insights
+- **Audit History**: View and compare past sustainability audits
+- **Responsive Design**: Works on desktop and mobile devices
 
-## 🛠️ Tech Stack
+## Tech Stack
 
-- **React 18**: Component-based UI library
-- **TypeScript**: Type-safe JavaScript for better development experience
-- **Vite**: Next-generation frontend tooling for faster development
-- **Axios**: Promise-based HTTP client for API requests
-- **shadcn/ui**: High-quality UI components built on Radix UI
-- **Tailwind CSS**: Utility-first CSS framework for styling
-- **Docker**: Containerization for easy deployment
+- **React + TypeScript**: Type-safe component development
+- **Vite**: Fast, modern build tooling
+- **shadcn/ui**: Accessible, customizable UI components
+- **Tailwind CSS**: Utility-first styling
+- **Axios**: API communication
 
-## 🚀 Getting Started
+## Quick Start
 
 ### Prerequisites
 - Node.js 16.0+
 - npm or yarn
-- Backend API running (see backend README)
+- Backend API running
 
-### Local Development Setup
-
-1. **Clone the Repository and Navigate to Frontend**
-   ```bash
-   git clone https://github.com/readysethack/eco-audit-ai.git
-   cd qloo-hackathon-app/frontend
-   ```
-
-2. **Install Dependencies**
-   ```bash
-   npm install
-   # or
-   yarn install
-   ```
-
-3. **Configure Environment Variables**
-   Create a `.env.local` file in the `frontend/` directory:
-   ```
-   VITE_API_URL=http://localhost:5000
-   ```
-
-4. **Start the Development Server**
-   ```bash
-   npm run dev
-   # or
-   yarn dev
-   ```
-
-   The application will be available at [http://localhost:5173](http://localhost:5173)
-
-### Building for Production
+### Setup
 
 ```bash
-npm run build
-# or
-yarn build
+# Install dependencies
+npm install
+
+# Configure environment (.env.local file)
+VITE_API_URL=http://localhost:5000
+
+# Start development server
+npm run dev
 ```
 
-The build output will be in the `dist/` directory.
+Application available at http://localhost:5173
 
-### Docker Deployment
+### Docker Setup
 
-1. **Build and Start with Docker Compose**
-   ```bash
-   # From the root directory
-   docker-compose build frontend
-   docker-compose up -d frontend
-   ```
+```bash
+# From project root
+docker-compose build frontend
+docker-compose up -d frontend
+```
 
-## 📁 Project Structure
+## Components
+
+### Core Flow
+
+1. **AuditForm**: Multi-step form collecting business information
+   - Business type input
+   - Location input
+   - Products/offerings input
+
+2. **LoadingView**: Animated interface shown during audit generation
+   - Progress indicators
+   - Contextual loading messages
+
+3. **ReportView**: Displays the complete sustainability audit
+   - Overall score visualization
+   - Strengths with explanations
+   - Improvement opportunities
+   - Actionable sustainability tip
+
+## Project Structure
 
 ```
 frontend/
-├── public/                # Static assets
 ├── src/
-│   ├── assets/            # Images and other assets
 │   ├── components/
-│   │   ├── eco-audit/     # Application-specific components
+│   │   ├── eco-audit/       # Business-specific components
 │   │   │   ├── AuditForm.tsx
 │   │   │   ├── LoadingView.tsx
 │   │   │   └── ReportView.tsx
-│   │   └── ui/            # Reusable UI components
-│   │       ├── button.tsx
-│   │       ├── card.tsx
-│   │       └── ...
-│   ├── hooks/             # Custom React hooks
-│   │   └── useLoadingAnimation.ts
-│   ├── lib/               # Utility libraries
-│   │   ├── axios.ts       # API client configuration
-│   │   └── utils.ts       # Shared utility functions
-│   ├── services/          # API service layer
+│   │   └── ui/              # Reusable UI components
+│   ├── hooks/               # Custom React hooks
+│   ├── services/            # API client services
 │   │   └── auditService.ts
-│   ├── types/             # TypeScript type definitions
+│   ├── types/               # TypeScript definitions
 │   │   └── eco-audit.ts
-│   ├── App.tsx            # Main application component
-│   ├── App.css            # Application styles
-│   ├── main.tsx           # Application entry point
-│   └── index.css          # Global styles
-├── Dockerfile             # Docker configuration
-├── nginx.conf             # Nginx configuration for production
+│   └── App.tsx              # Main application component
+├── Dockerfile               # Container configuration
+└── package.json             # Dependencies and scripts
+```
+
+## Component Flow
+
+```
++-------------+        +--------------+        +-------------+
+|             |        |              |        |             |
+| AuditForm   | -----> | LoadingView  | -----> | ReportView  |
+|             |        |              |        |             |
++-------------+        +--------------+        +-------------+
+      |                                               |
+      |                                               |
+      +-----------------------------------------------+
+                      Audit History
+```
+
+## Key User Flows
+
+1. **Creating a New Audit**:
+   - Enter business details in the multi-step form
+   - View engaging loading animation during processing
+   - Review comprehensive sustainability audit results
+
+2. **Viewing Audit History**:
+   - Access list of previously generated audits
+   - Sort by different criteria (name, date, score)
+   - Select and view detailed audit reports
+
+## Development Guidelines
+
+- Use TypeScript for all new components
+- Follow the existing component structure
+- Leverage shadcn/ui components for UI elements
+- Use the established API service for backend communication
+
+## Complete Project Structure
+
+```
+frontend/
+├── src/
+│   ├── components/
+│   │   ├── eco-audit/       # Business-specific components
+│   │   │   ├── AuditForm.tsx
+│   │   │   ├── LoadingView.tsx
+│   │   │   └── ReportView.tsx
+│   │   └── ui/              # Reusable UI components
+│   ├── hooks/               # Custom React hooks
+│   ├── services/            # API service layer
+│   │   └── auditService.ts
+│   ├── types/               # TypeScript definitions
+│   │   └── eco-audit.ts
+│   ├── App.tsx              # Main application component
+│   ├── App.css              # Application styles
+│   ├── main.tsx             # Application entry point
+│   └── index.css            # Global styles
+├── Dockerfile               # Docker configuration
+├── nginx.conf               # Nginx configuration for production
 ├── vite.config.ts         # Vite configuration
 ├── tsconfig.json          # TypeScript configuration
 └── package.json           # Project dependencies and scripts
 ```
 
-## 🧩 Component Architecture
+## Component Architecture
 
 ### Main Components
 
@@ -129,7 +164,7 @@ frontend/
 3. **Loading State**: Managed with custom useLoadingAnimation hook
 4. **Display Results**: Presented through ReportView
 
-## 🎯 Application Features
+## Application Features
 
 ### Multi-Step Form
 The application guides users through a series of inputs to collect necessary information for the sustainability audit:
@@ -158,7 +193,7 @@ Users can access previous audits through the history menu, allowing them to:
 - Compare different businesses
 - Track sustainability progress over time
 
-## 🤝 Contributing
+## Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
 

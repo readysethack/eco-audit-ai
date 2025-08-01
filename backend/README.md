@@ -1,82 +1,56 @@
 # EcoAudit AI Backend
 
-A powerful Flask-based REST API that generates comprehensive sustainability audits for businesses by leveraging the Qloo Cultural AI API and Google's Gemini AI.
+A Flask-based REST API that generates tailored sustainability audits for small businesses using Qloo's cultural insights and Gemini AI.
 
-## 🚀 Features
+## Features
 
-- **AI-Powered Sustainability Analysis**: Combines cultural data with sustainability metrics
-- **Business Context Awareness**: Tailors recommendations based on business type, location, and offerings
-- **Comprehensive Reporting**: Provides sustainability scores, strengths, improvement areas, and actionable tips
-- **Flexible API**: Sort and filter audits by various parameters
-- **Robust Error Handling**: Graceful handling of API failures with fallback responses
-- **Health Check Endpoint**: Easily monitor API status and uptime
+- **AI-Powered Analysis**: Combines Qloo cultural data with Gemini AI
+- **Business-Specific Recommendations**: Tailored to business type, location, and offerings
+- **Small Business Focus**: Practical, cost-effective sustainability guidance
+- **Flexible Filtering**: Sort and filter audits by various parameters
+- **Error Resilience**: Graceful handling of API failures with fallback responses
 
-## ⚙️ Tech Stack
+## Tech Stack
 
-- **Flask**: Lightweight WSGI web application framework
-- **Flask-SMOREST**: Extension for building RESTful APIs with automatic documentation
-- **Marshmallow**: Schema validation and serialization
-- **Google Gemini API**: AI-based analysis and report generation
-- **Qloo API**: Cultural intelligence data for business insights
-- **Gunicorn**: WSGI HTTP Server for production deployment
-- **Docker**: Containerization for easy deployment
+- **Flask & Flask-SMOREST**: API framework with auto-documentation
+- **Marshmallow**: Data validation and serialization
+- **Gemini AI**: Contextual analysis and recommendation generation
+- **Qloo API**: Cultural intelligence data
+- **Gunicorn**: Production-ready WSGI server
+- **Docker**: Containerization
 
-## 🛠️ Setup and Installation
+## Quick Setup
 
 ### Prerequisites
 - Python 3.9+
-- Poetry (dependency management)
-- Qloo API Key
-- Gemini API Key
+- Qloo API Key + Gemini API Key
 
-### Local Development Setup
+### Local Development
 
-1. **Clone the Repository and Navigate to Backend**
-   ```bash
-   git clone https://github.com/readysethack/eco-audit-ai.git
-   cd qloo-hackathon-app/backend
-   ```
+```bash
+# Install dependencies
+poetry install
 
-2. **Install Dependencies**
-   ```bash
-   poetry install
-   ```
+# Configure environment (.env file)
+QLOO_API_KEY=your_qloo_api_key
+GEMINI_API_KEY=your_gemini_api_key
+FLASK_ENV=development
 
-3. **Configure Environment Variables**
-   Create a `.env` file in the `backend/` directory:
-   ```
-   QLOO_API_KEY=your_qloo_api_key
-   GEMINI_API_KEY=your_gemini_api_key
-   FLASK_ENV=development
-   ```
+# Run server
+poetry run flask run --reload
+```
 
-4. **Activate the Virtual Environment**
-   ```bash
-   # Linux/macOS
-   poetry shell
-   
-   # Windows PowerShell
-   poetry shell
-   ```
+API available at http://localhost:5000 with docs at http://localhost:5000/docs
 
-5. **Run the Development Server**
-   ```bash
-   flask run --reload
-   ```
+### Docker Setup
 
-   The API will be available at [http://localhost:5000](http://localhost:5000)
-   API documentation is available at [http://localhost:5000/docs](http://localhost:5000/docs)
+```bash
+# From project root
+docker-compose build backend
+docker-compose up -d backend
+```
 
-### Docker Deployment
-
-1. **Build and Start with Docker Compose**
-   ```bash
-   # From the root directory
-   docker-compose build backend
-   docker-compose up -d backend
-   ```
-
-## 📊 API Endpoints
+## API Endpoints
 
 ### Health Check
 ```
@@ -89,7 +63,7 @@ Returns API status and timestamp.
 POST /audit/list
 ```
 
-**Request Body:**
+**Request:**
 ```json
 {
   "business_type": "independent vegan café",
@@ -98,23 +72,23 @@ POST /audit/list
 }
 ```
 
-**Response (201 Created):**
+**Response:**
 ```json
 {
   "id": "bcaec2b4-1af7-468c-b475-5c437ccde903",
-  "created": "2025-07-31T21:04:44.000000Z",
+  "created": "2025-07-31T21:04:44Z",
   "business_name": "The Independent Vegan Café, Brussels",
   "sustainability_score": 86,
   "strengths": [
-    "Core vegan and plant-based offerings inherently reduce environmental footprint, aligning with growing consumer demand for sustainable dietary choices in Brussels.",
-    "Strong commitment to local sourcing, exemplified by locally roasted beans, minimizes transportation emissions and supports the local economy.",
-    "Promotion of reusability through handmade ceramics significantly reduces single-use waste, fostering a circular economy approach."
+    "Core vegan offerings reduce environmental footprint...",
+    "Local sourcing minimizes transportation emissions...",
+    "Reusable ceramics reduce single-use waste..."
   ],
   "improvements": [
-    "Implement a comprehensive waste management program, including composting all organic waste such as coffee grounds and food scraps.",
-    "Conduct an energy audit to identify opportunities for efficiency upgrades in lighting and appliances, potentially exploring renewable energy sources."
+    "Implement composting for organic waste...",
+    "Conduct energy audit for efficiency upgrades..."
   ],
-  "tip": "To further enhance your local appeal and sustainability, explore partnerships with local urban farms or small-batch producers in Belgium to incorporate hyper-seasonal ingredients into your menu, creating a unique 'Brussels terroir' experience for your patrons."
+  "tip": "Partner with local urban farms for seasonal ingredients..."
 }
 ```
 
@@ -123,17 +97,17 @@ POST /audit/list
 GET /audit/list?order_by=sustainability_score&order=desc
 ```
 
-**Query Parameters:**
-- `order_by`: `business_name` | `created` | `sustainability_score` (default: `created`)
-- `order`: `asc` | `desc` (default: `asc`)
+**Parameters:**
+- `order_by`: `business_name`, `created`, `sustainability_score` (default: `created`)
+- `order`: `asc`, `desc` (default: `asc`)
 
-**Response (200 OK):**
+**Response:**
 ```json
 {
   "audits": [
     {
       "id": "bcaec2b4-1af7-468c-b475-5c437ccde903",
-      "created": "2025-07-31T21:04:44.000000Z",
+      "created": "2025-07-31T21:04:44Z",
       "business_name": "The Independent Vegan Café, Brussels",
       "sustainability_score": 86,
       "strengths": ["..."],
@@ -144,14 +118,31 @@ GET /audit/list?order_by=sustainability_score&order=desc
 }
 ```
 
-## 📁 Project Structure
+### Get Specific Audit
+```
+GET /audit/{audit_id}
+```
+
+**Response:** Full audit details for the specified ID
+
+## Implementation Notes
+
+- **Cultural Context**: The system analyzes regional business practices
+- **Small Business Focus**: All recommendations are practical for small businesses
+- **Fallback Handling**: Graceful degradation when external APIs fail
+- **Scalability**: Containerized for easy deployment and scaling
+
+## Code Structure
 
 ```
 backend/
-├── app.py                 # Main API entry point with route definitions
-├── Dockerfile             # Docker configuration for containerization
-├── pyproject.toml         # Poetry dependency management
-├── requirements.txt       # Direct dependencies for Docker build
+├── app.py           # API endpoints and route definitions
+├── utils/
+│   └── utils.py     # Core business logic and API integration
+├── Dockerfile       # Container configuration
+├── pyproject.toml   # Poetry dependency management
+└── requirements.txt # Direct dependencies for Docker
+```
 ├── __pycache__/           # Python cache files
 └── utils/
     ├── test_data.txt      # Sample data for testing

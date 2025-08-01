@@ -83,14 +83,10 @@ export default function AuditForm({
 
   const getStepTitle = () => {
     switch (currentStep) {
-      case 1:
-        return "Business Information"
-      case 2:
-        return "Business Type"
       case 3:
         return "Location & Products"
       default:
-        return ""
+        return "Business Information"
     }
   }
 

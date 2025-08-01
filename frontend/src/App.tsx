@@ -22,12 +22,13 @@ interface AuditResult {
   tip: string;
 }
 
-type ViewState = "form" | "loading" | "report";
+type ViewState = "form" | "loading" | "report" | "reportSkeleton";
 
 // Components
 import AuditForm from "@/components/eco-audit/AuditForm"
 import LoadingView from "@/components/eco-audit/LoadingView"
 import ReportView from "@/components/eco-audit/ReportView"
+import ReportSkeleton from "@/components/eco-audit/ReportSkeleton"
 
 export default function EcoAuditApp() {
   // State
@@ -50,11 +51,12 @@ export default function EcoAuditApp() {
     try {
       const result = await submitAudit(data)
       
-      // Wait for loading animation to complete
-      setTimeout(() => {
-        setAuditResult(result)
-        setViewState("report")
-      }, 6000)
+      // Clear history cache so it will be refetched with the new audit
+      setHistoryData([])
+      
+      // Set result immediately when API responds, regardless of loading animation
+      setAuditResult(result)
+      setViewState("report")
     } catch (error) {
       console.error("Error submitting to Flask API:", error)
       setViewState("form")
@@ -78,7 +80,8 @@ export default function EcoAuditApp() {
     setHistoryLoading(true)
     try {
       const historyItems = await getAuditHistory()
-      setHistoryData(historyItems)
+      // Limit to latest 5 audits
+      setHistoryData(historyItems.slice(0, 5))
     } catch (error) {
       console.error("Error fetching history:", error)
     } finally {
@@ -91,23 +94,22 @@ export default function EcoAuditApp() {
     console.log("Selected audit:", auditId, auditName)
     setHistoryOpen(false)
     
-    // Fetch the specific audit
+    // Fetch the specific audit with skeleton loading
     fetchAuditById(auditId)
   }
   
   // Fetch a specific audit by ID
   const fetchAuditById = async (auditId: string) => {
-    setViewState("loading")
-    simulateLoading()
+    setViewState("reportSkeleton")
     
     try {
       const result = await getAuditById(auditId)
       
-      // Wait for loading animation to complete
+      // Add a small delay to show skeleton for better UX
       setTimeout(() => {
         setAuditResult(result)
         setViewState("report")
-      }, 6000)
+      }, 800)
     } catch (error) {
       console.error("Error fetching audit details:", error)
       setViewState("form")
@@ -118,6 +120,8 @@ export default function EcoAuditApp() {
   const handleStartNewAudit = () => {
     setViewState("form")
     setAuditResult(null)
+    // Clear history cache so it will be refetched with latest data
+    setHistoryData([])
   }
 
   // Render the current view based on state
@@ -131,6 +135,14 @@ export default function EcoAuditApp() {
         onHistoryItemClick={handleHistoryItemClick}
         loadingProgress={loadingProgress}
         loadingText={loadingText}
+      />
+    )
+  }
+
+  if (viewState === "reportSkeleton") {
+    return (
+      <ReportSkeleton
+        onStartNewAudit={handleStartNewAudit}
       />
     )
   }

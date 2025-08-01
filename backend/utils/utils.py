@@ -232,7 +232,7 @@ def generate_summary(title, location, products):
             **EXPECTED OUTPUT (JSON Schema)**
             {{
                 "business_name": "{title} at {location}",
-                "sustainability_score": {sustainability_score},
+                "sustainability_score": average between your prediction of the score and {sustainability_score},
                 "strengths": [
                     "A specific strength tailored to this {title} with clear business benefits.",
                     "A second strength that relates directly to the business offerings ({products}).",

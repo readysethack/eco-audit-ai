@@ -1,5 +1,9 @@
 "use client"
 
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Progress } from "@/components/ui/progress"
+
 // Define AuditResult interface locally as a workaround for path resolution issues
 interface AuditResult {
   id: string;
@@ -18,97 +22,177 @@ interface ReportViewProps {
 
 export default function ReportView({ auditResult, onStartNewAudit }: ReportViewProps) {
   const getScoreGrade = (score: number) => {
-    if (score >= 9) return "A+"
-    if (score >= 8.5) return "A"
-    if (score >= 8) return "B+"
-    if (score >= 7.5) return "B"
-    if (score >= 7) return "B-"
-    if (score >= 6.5) return "C+"
-    if (score >= 6) return "C"
-    return "D"
+    if (score >= 90) return "A+"
+    if (score >= 85) return "A"
+    if (score >= 80) return "B+"
+    if (score >= 75) return "B"
+    if (score >= 70) return "B-"
+    if (score >= 65) return "C+"
+    if (score >= 60) return "C"
+    if (score >= 50) return "D"
+    return "F"
   }
 
   const getScoreLabel = (score: number) => {
-    if (score >= 8.5) return "Excellent"
-    if (score >= 7.5) return "Good"
-    if (score >= 6.5) return "Fair"
-    return "Needs Improvement"
+    if (score >= 85) return "Excellent"
+    if (score >= 75) return "Good"
+    if (score >= 65) return "Fair"
+    if (score >= 50) return "Needs Improvement"
+    return "Critical"
+  }
+
+  const getScoreColor = (score: number) => {
+    if (score >= 85) return "text-green-600"
+    if (score >= 75) return "text-blue-600"
+    if (score >= 65) return "text-yellow-600"
+    if (score >= 50) return "text-orange-600"
+    return "text-red-600"
+  }
+
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    })
   }
 
   return (
-    <div className="min-h-screen bg-gray-900 text-cyan-400 font-mono p-4">
-      <div className="max-w-4xl mx-auto">
+    <div className="min-h-screen bg-background p-4">
+      <div className="max-w-4xl mx-auto space-y-6">
         {/* Header */}
-        <div className="border border-cyan-400 p-4 mb-4">
-          <div className="flex justify-between items-center">
-            <span className="text-cyan-400">[EcoAudit.AI]</span>
-            <div className="space-x-4">
-              <button className="text-red-400 hover:text-red-300 transition-colors">[Download PDF]</button>
-              <button className="text-red-400 hover:text-red-300 transition-colors" onClick={onStartNewAudit}>
-                [Start New Audit]
-              </button>
-            </div>
+        <div className="flex justify-between items-center animate-in fade-in duration-500">
+          <h1 className="text-lg font-semibold">[EcoAudit.AI]</h1>
+          <div className="space-x-2">
+            <Button
+              variant="outline"
+              size="sm"
+              className="transition-all hover:scale-105"
+            >
+              Download PDF
+            </Button>
+            <Button
+              variant="default"
+              size="sm"
+              onClick={onStartNewAudit}
+              className="transition-all hover:scale-105"
+            >
+              Start New Audit
+            </Button>
           </div>
         </div>
 
-        {/* Report Content */}
-        <div className="border border-cyan-400 p-6 space-y-6">
-          {/* Report Title */}
-          <div>
-            <span className="text-yellow-400">Report for:</span> {auditResult.business_name}
-          </div>
+        {/* Report Header Card */}
+        <Card className="animate-in fade-in slide-in-from-bottom-4 duration-700">
+          <CardHeader>
+            <CardTitle className="flex justify-between items-center">
+              <span>Sustainability Report</span>
+              <span className="text-sm font-normal text-muted-foreground">
+                {formatDate(auditResult.created)}
+              </span>
+            </CardTitle>
+            <p className="text-lg font-medium">{auditResult.business_name}</p>
+          </CardHeader>
+        </Card>
 
-          {/* Main Content Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Overall Score */}
-            <div className="border border-cyan-400 p-4 text-center">
-              <div className="text-sm mb-2">OVERALL ECO SCORE</div>
-              <div className="text-2xl font-bold">{getScoreGrade(auditResult.sustainability_score)}</div>
-              <div className="text-sm">({getScoreLabel(auditResult.sustainability_score)})</div>
-            </div>
-
-            {/* Key Metrics */}
-            <div className="border border-cyan-400 p-4">
-              <div className="text-sm mb-4">KEY METRICS (vs. Regional Avg)</div>
-              <div className="space-y-2 text-sm">
-                <div className="flex justify-between">
-                  <span>• Energy Usage:</span>
-                  <span className="text-green-400">[+15%] ▲</span>
+        {/* Score Overview */}
+        <Card className="animate-in fade-in slide-in-from-bottom-4 duration-700 delay-100">
+          <CardHeader>
+            <CardTitle>Overall Sustainability Score</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-4">
+                <div className={`text-4xl font-bold ${getScoreColor(auditResult.sustainability_score)}`}>
+                  {auditResult.sustainability_score}
                 </div>
-                <div className="flex justify-between">
-                  <span>• Waste Diversion:</span>
-                  <span className="text-red-400">[-8%] ▼</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>• Water Purity:</span>
-                  <span className="text-green-400">[+2%] ▲</span>
+                <div>
+                  <div className={`text-xl font-semibold ${getScoreColor(auditResult.sustainability_score)}`}>
+                    {getScoreGrade(auditResult.sustainability_score)}
+                  </div>
+                  <div className="text-sm text-muted-foreground">
+                    {getScoreLabel(auditResult.sustainability_score)}
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
+            <Progress 
+              value={auditResult.sustainability_score} 
+              className="h-3" 
+            />
+            <p className="text-sm text-muted-foreground">
+              Score out of 100 based on sustainability practices and environmental impact
+            </p>
+          </CardContent>
+        </Card>
 
-          {/* Actionable Insights */}
-          <div>
-            <div className="text-yellow-400 mb-4">Actionable Insights</div>
-            <div className="border-b border-cyan-400 mb-4"></div>
-
+        {/* Strengths Section */}
+        <Card className="animate-in fade-in slide-in-from-bottom-4 duration-700 delay-200">
+          <CardHeader>
+            <CardTitle className="text-green-600">Key Strengths</CardTitle>
+          </CardHeader>
+          <CardContent>
             <div className="space-y-4">
-              {auditResult.improvements.slice(0, 3).map((improvement, index) => {
-                const impacts = ["HIGH IMPACT", "MEDIUM IMPACT", "LOW IMPACT"]
-                const colors = ["text-red-400", "text-yellow-400", "text-green-400"]
+              {auditResult.strengths.map((strength, index) => (
+                <div key={index} className="flex items-start space-x-3">
+                  <div className="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <span className="text-green-600 text-sm font-semibold">{index + 1}</span>
+                  </div>
+                  <p className="text-sm leading-relaxed">{strength}</p>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
 
+        {/* Improvements Section */}
+        <Card className="animate-in fade-in slide-in-from-bottom-4 duration-700 delay-300">
+          <CardHeader>
+            <CardTitle className="text-blue-600">Recommended Improvements</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              {auditResult.improvements.map((improvement, index) => {
+                const impactLevels = ["High Impact", "Medium Impact", "Low Impact"]
+                const impactColors = ["text-red-600", "text-yellow-600", "text-green-600"]
+                const impactBgs = ["bg-red-100", "bg-yellow-100", "bg-green-100"]
+                
                 return (
-                  <div key={index} className="space-y-1">
-                    <div>
-                      <span className="text-cyan-400">{index + 1}.</span>{" "}
-                      <span className={colors[index]}>[{impacts[index]}]</span> <span>{improvement}</span>
+                  <div key={index} className="space-y-2">
+                    <div className="flex items-start space-x-3">
+                      <div className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+                        <span className="text-blue-600 text-sm font-semibold">{index + 1}</span>
+                      </div>
+                      <div className="flex-1">
+                        <div className="flex items-center space-x-2 mb-2">
+                          <span className={`px-2 py-1 rounded-full text-xs font-medium ${impactColors[index]} ${impactBgs[index]}`}>
+                            {impactLevels[index] || "Standard Impact"}
+                          </span>
+                        </div>
+                        <p className="text-sm leading-relaxed">{improvement}</p>
+                      </div>
                     </div>
                   </div>
                 )
               })}
             </div>
-          </div>
-        </div>
+          </CardContent>
+        </Card>
+
+        {/* Expert Tip */}
+        <Card className="animate-in fade-in slide-in-from-bottom-4 duration-700 delay-400 border-amber-200 bg-amber-50">
+          <CardHeader>
+            <CardTitle className="text-amber-700 flex items-center space-x-2">
+              <span>💡</span>
+              <span>Expert Tip</span>
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-amber-800 leading-relaxed">{auditResult.tip}</p>
+          </CardContent>
+        </Card>
       </div>
     </div>
   )

@@ -38,24 +38,7 @@ api = Api(server)
 
 bl = Blueprint("audit", "audit", url_prefix="/audit", description="AUDIT API")
 
-audits = [
-    {
-        "id" : UUID("95b0f982-ee69-4c71-9898-eeb26717f89b"),
-        "created": datetime.now(timezone.utc),
-        "business_name": "The Independent Vegan Café, Brussels",
-        "sustainability_score": 86,
-        "strengths": [
-            "Core vegan and plant-based offerings inherently reduce environmental footprint, aligning with growing consumer demand for sustainable dietary choices in Brussels.",
-            "Strong commitment to local sourcing, exemplified by locally roasted beans, minimizes transportation emissions and supports the local economy.",
-            "Promotion of reusability through handmade ceramics significantly reduces single-use waste, fostering a circular economy approach."
-        ],
-        "improvements": [
-            "Implement a comprehensive waste management program, including composting all organic waste such as coffee grounds and food scraps.",
-            "Conduct an energy audit to identify opportunities for efficiency upgrades in lighting and appliances, potentially exploring renewable energy sources."
-        ],
-        "tip": "To further enhance your local appeal and sustainability, explore partnerships with local urban farms or small-batch producers in Belgium to incorporate hyper-seasonal ingredients into your menu, creating a unique 'Brussels terroir' experience for your patrons."
-    }
-]
+audits = []
 
 class CreateAudit(Schema): # Response Schema
     business_name = fields.Str(required=True)

@@ -10,6 +10,9 @@ COPY components.json ./
 COPY eslint.config.js ./
 
 RUN npm ci
+# Set the API URL environment variable during build
+ARG VITE_API_URL
+ENV VITE_API_URL=${VITE_API_URL:-https://eco-audit-ai-backend.onrender.com}
 # Skip TypeScript checks and just build with Vite
 RUN npm run build
 

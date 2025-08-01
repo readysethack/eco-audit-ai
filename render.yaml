@@ -1,0 +1,15 @@
+services:
+  # Frontend web service
+  - type: web
+    name: eco-audit-ai-frontend
+    env: docker
+    region: ohio
+    plan: free
+    branch: main
+    dockerfilePath: ./frontend/Dockerfile
+    dockerContext: ./frontend
+    envVars:
+      - key: VITE_API_URL
+        value: https://eco-audit-ai-backend.onrender.com
+      - key: PORT
+        value: 3000

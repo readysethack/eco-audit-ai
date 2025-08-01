@@ -9,9 +9,8 @@
   <img src="https://img.shields.io/badge/License-MIT-yellow" alt="License: MIT" />
 </div>
 
-<p align="center">
-  <b>An AI-powered sustainability audit platform for businesses</b>
-</p>
+<img width="128" height="39" alt="image" src="https://github.com/user-attachments/assets/a4d264a0-c00f-467e-ab70-e9ef849a463b" />
+
 
 ---
 
@@ -26,10 +25,6 @@ EcoAudit AI is a comprehensive full-stack application that helps businesses asse
 - 💡 **AI-Powered Insights**: Identifies strengths and improvement opportunities
 - 🎯 **Actionable Recommendations**: Delivers specific, practical sustainability tips
 - 📱 **Modern Interface**: Offers an intuitive, responsive user experience
-
-<p align="center">
-  <img src="https://i.imgur.com/placeholder-screenshot.png" alt="EcoAudit AI Screenshot" width="600" />
-</p>
 
 ## 🚀 Getting Started
 

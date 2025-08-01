@@ -24,7 +24,16 @@ FROM nginx:alpine
 COPY --from=build /app/dist /usr/share/nginx/html
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 COPY start-nginx.sh /start-nginx.sh
-RUN chmod +x /start-nginx.sh
-RUN apk add --no-cache sed
+COPY health-check.sh /health-check.sh
+RUN chmod +x /start-nginx.sh /health-check.sh
+RUN apk add --no-cache sed curl
 EXPOSE 3000
+
+# Add a default index.html if build failed to create one
+RUN if [ ! -s /usr/share/nginx/html/index.html ]; then \
+    echo "<html><body><h1>Eco Audit AI</h1><p>Application is starting...</p></body></html>" > /usr/share/nginx/html/index.html; \
+    fi
+
+HEALTHCHECK --interval=60s --timeout=5s --start-period=15s --retries=2 CMD /health-check.sh
+
 CMD ["/start-nginx.sh"]

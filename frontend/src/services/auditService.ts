@@ -37,7 +37,8 @@ export async function submitAudit(formData: FormData): Promise<AuditResult> {
 }
 
 export async function getAuditHistory(): Promise<Array<{ id: string; name: string }>> {
-  const response = await api.get("/audit/list")
+  // Add a cache-busting parameter to ensure we get fresh data
+  const response = await api.get(`/audit/list?_t=${new Date().getTime()}`)
   
   if (response.status === 200) {
     return response.data.audits?.map((audit: AuditResult) => ({

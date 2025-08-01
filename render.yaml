@@ -8,8 +8,11 @@ services:
     branch: main
     dockerfilePath: ./frontend/Dockerfile
     dockerContext: ./frontend
+    healthCheckPath: /
+    buildCommand: "" # Let Dockerfile handle the build
     envVars:
       - key: VITE_API_URL
         value: https://eco-audit-ai-backend.onrender.com
       - key: PORT
         sync: false
+    autoDeploy: true

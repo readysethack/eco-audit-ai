@@ -68,15 +68,15 @@ export default function EcoAuditApp() {
     const newState = !historyOpen
     setHistoryOpen(newState)
     
-    if (newState && historyData.length === 0) {
+    // Always fetch fresh data when opening the history
+    if (newState) {
       fetchHistory()
     }
   }
 
   // Fetch audit history
   const fetchHistory = async () => {
-    if (historyData.length > 0) return
-
+    // Always fetch fresh data when requested
     setHistoryLoading(true)
     try {
       const historyItems = await getAuditHistory()

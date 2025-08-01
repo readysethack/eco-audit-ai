@@ -37,8 +37,14 @@ export async function submitAudit(formData: FormData): Promise<AuditResult> {
 }
 
 export async function getAuditHistory(): Promise<Array<{ id: string; name: string }>> {
-  // Add a cache-busting parameter to ensure we get fresh data
-  const response = await api.get(`/audit/list?_t=${new Date().getTime()}`)
+  // Use axios headers to prevent caching instead of query params
+  const response = await api.get('/audit/list', {
+    headers: {
+      'Cache-Control': 'no-cache',
+      'Pragma': 'no-cache',
+      'Expires': '0',
+    }
+  })
   
   if (response.status === 200) {
     return response.data.audits?.map((audit: AuditResult) => ({

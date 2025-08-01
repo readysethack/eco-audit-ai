@@ -111,7 +111,7 @@ def calculate_sustainability_score(business_data, base_tags=None):
     if not business_data:
         return 50  # Default middle score when no data
         
-    scores = [60]  # Buffer
+    scores = [100]  # Buffer
     for business in business_data:
         try:
             # Tag Match
@@ -153,7 +153,7 @@ def calculate_sustainability_score(business_data, base_tags=None):
     if len(scores) <= 1:
         return 50
         
-    return round(sum(scores)/len(scores))
+    return round(sum(scores)/len(scores) +20)
 
 class Summary(BaseModel): # Response Schema
     business_name : str
@@ -232,7 +232,7 @@ def generate_summary(title, location, products):
             **EXPECTED OUTPUT (JSON Schema)**
             {{
                 "business_name": "{title} at {location}",
-                "sustainability_score": average between your prediction of the score and {sustainability_score},
+                "sustainability_score": average between your prediction of the score and {sustainability_score}. your prediction of the score should rely solely on your external knowledge base regarding the input,
                 "strengths": [
                     "A specific strength tailored to this {title} with clear business benefits.",
                     "A second strength that relates directly to the business offerings ({products}).",

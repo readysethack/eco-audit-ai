@@ -25,6 +25,6 @@ COPY --from=build /app/dist /usr/share/nginx/html
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 COPY start-nginx.sh /start-nginx.sh
 RUN chmod +x /start-nginx.sh
-RUN apk add --no-cache bash gettext
+RUN apk add --no-cache sed
 EXPOSE 3000
 CMD ["/start-nginx.sh"]
